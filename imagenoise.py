@@ -11,14 +11,13 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib import pylab as plt
 from matplotlib.figure import Figure
 
-
 class GUI(Frame):
-    def __init__(self,parent=None):
+    def __init__(self,parent=None, minsize=(500,500)):
         Frame.__init__(self,parent)
         self.parent = parent
-        self.pack()
+        self.grid()
         self.make_widgets()
-
+        
     def make_widgets(self):
         self.winfo_toplevel().title("Image Noise")
 
@@ -29,7 +28,7 @@ class GUI(Frame):
             file_path = filedialog.askopenfilename()
             root.destroy()
         browsebut = tk.Button(self, text ="Select Image", command = lambda:[browse(), draworig()])
-        browsebut.pack()
+        browsebut.grid(row=0, column=0)
 
         def draworig(): 
             img = Image.open(file_path)
@@ -37,8 +36,7 @@ class GUI(Frame):
             img = ImageTk.PhotoImage(img)
             label = Label(self.master, image=img)
             label.img = img # to keep the reference for the image.
-            label.pack()
-
+            label.grid(row=0, column=1)
 
         itxt = tk.Label(self, text = "I value")
         ival = tk.Entry(self)
@@ -51,24 +49,24 @@ class GUI(Frame):
         randval = tk.Entry(self)
         
         def hiderand():
-            randtxt.pack_forget()
-            randval.pack_forget()
-            itxt.pack()
-            ival.pack()
-            jtxt.pack()
-            jval.pack()
-            ktxt.pack()
-            kval.pack()
+            randtxt.grid_forget()
+            randval.grid_forget()
+            itxt.grid(row=5,column=0)
+            ival.grid(row=6,column=0)
+            jtxt.grid(row=7,column=0)
+            jval.grid(row=8,column=0)
+            ktxt.grid(row=9,column=0)
+            kval.grid(row=10,column=0)
         
         def hideijk():
-            itxt.pack_forget()
-            ival.pack_forget()
-            jtxt.pack_forget()
-            jval.pack_forget()
-            ktxt.pack_forget()
-            kval.pack_forget()
-            randtxt.pack()
-            randval.pack()
+            itxt.grid_forget()
+            ival.grid_forget()
+            jtxt.grid_forget()
+            jval.grid_forget()
+            ktxt.grid_forget()
+            kval.grid_forget()
+            randtxt.grid(row=2,column=0)
+            randval.grid(row=3,column=0)
 
         proctype = IntVar()
         randbut = tk.Radiobutton(root, 
@@ -81,10 +79,12 @@ class GUI(Frame):
               padx = 20, 
               variable=proctype, 
               value=2, command=hiderand)
-        randbut.pack()
-        ijkbut.pack()
+        randbut.grid(row=1, column=0)
+        ijkbut.grid(row=4,column=0)
 
         def process():
+            label = Label(self.master)
+            label.grid_forget()
             im = Image.open(file_path)
             im = im.resize((int(im.size[0]/10), int(im.size[1]/10)))
 
@@ -108,16 +108,11 @@ class GUI(Frame):
             img = ImageTk.PhotoImage(image=Image.fromarray(data2.astype(np.uint8)))
             label = Label(self.master, image=img)
             label.img = img # to keep the reference for the image.
-            label.pack()
-        
+            label.grid(row=1, column=1)
 
         P = tk.Button(root, text ="Process", command = process)
-        P.pack()
+        P.grid(row=11,column=0)
 
 root = tk.Tk()
 gui = GUI(root)
 root.mainloop()
-
-
-
-
